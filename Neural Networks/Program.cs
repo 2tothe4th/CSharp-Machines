@@ -3,7 +3,7 @@ using System.Data;
 using System.Diagnostics;
 using Newtonsoft.Json;
 
-namespace Neural_Networks
+namespace Neural_Network
 {
     public class DataPoint
     {
@@ -21,11 +21,22 @@ namespace Neural_Networks
             return Math.Max(0, input);
         }
     }
+    public class ActivationFunctionDerivatives
+    {
+        public static double Sigmoid(double input)
+        {
+            return ActivationFunctions.Sigmoid(input) * Math.Exp(-input);
+        }
+        public static double ReLU(double input)
+        {
+            return input >= 0 ? 1 : 0;
+        }
+    }
     public class Layer
     {
         public double[,] weights;
         public double[] biases;
-        public double[] CalculateOutputs(double[] inputs)
+        public double[] CalculateOutputs(double[] inputs, Func<double, double> activation)
         {
             double[] outputs = new double[weights.GetLength(1)];
             for (int i = 0; i < inputs.Length; i++)
@@ -38,7 +49,7 @@ namespace Neural_Networks
             for (int i = 0; i < outputs.Length; i++)
             {
                 outputs[i] += biases[i];
-                outputs[i] = ActivationFunctions.Sigmoid(outputs[i]);
+                outputs[i] = activation(outputs[i]);
             }
             return outputs;
         }
@@ -49,11 +60,16 @@ namespace Neural_Networks
         public int[] nodeCounts;
         public double learningStrength = 0.5;
         public double weightAndBiasRandomRange = 5;
-        public double miniBatchSize = 10;
+
+        //https://datascience.stackexchange.com/questions/18414/are-there-any-rules-for-choosing-the-size-of-a-mini-batch
+        public double miniBatchSize = 32;
 
         //Partial derivative calculations
         public double deltaW = 0.01;
         public double deltaB = 0.01;
+
+        //Activation functions
+        Func<double, double> activationFunction = input => ActivationFunctions.Sigmoid(input); 
 
         //public double[] inputValues;
         public void CreateLayers()
@@ -79,8 +95,8 @@ namespace Neural_Networks
         public double[] CalculateOutputsForLayer(double[] inputValues, int layer)
         {
             if (layer == 0)
-                return layers[0].CalculateOutputs(inputValues);
-            return layers[layer].CalculateOutputs(CalculateOutputsForLayer(inputValues, layer - 1));
+                return layers[0].CalculateOutputs(inputValues, activationFunction);
+            return layers[layer].CalculateOutputs(CalculateOutputsForLayer(inputValues, layer - 1), activationFunction);
         }
         public double CalculateCostForDataPoint(DataPoint data)
         {
@@ -118,6 +134,13 @@ namespace Neural_Networks
                     }
                 }
             }
+        }
+        public double CalculateActivationOverWeightDerivative(int weightLayer, int inNode, int outNode)
+        {
+            //z = wx + b
+            //a = A(z)
+            Layer currentLayer = layers[weightLayer];
+            return ActivationFunctionDerivatives.Sigmoid(0);
         }
         public double CalculateCostOverWeightDerivative(DataPoint[] dataSet, int layer, int inNode, int outNode)
         {
@@ -195,6 +218,7 @@ namespace Neural_Networks
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
+            
             while (stopwatch.ElapsedMilliseconds < 10000)
             {
                 DataPoint[] newDataSet = dataSet.OrderBy(x => random.Next(32768)).ToArray();
