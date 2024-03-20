@@ -68,6 +68,12 @@ namespace Neural_Network
             var selectedNeuralNetwork = new NeuralNetwork();
             selectedNeuralNetwork.nodeCounts = new int[] { 2, 3, 2, 1 };
             selectedNeuralNetwork.CreateLayers();
+            /*
+            selectedNeuralNetwork.layers[1].weights[0, 0] = 1;
+            selectedNeuralNetwork.layers[1].weights[1, 0] = 1;
+            selectedNeuralNetwork.SetPrecomputedNodes(new double[] { 0 });
+            Console.WriteLine(selectedNeuralNetwork.precomputedActivations[2][0]);*/
+
             DataPoint[] dataSet = JsonConvert.DeserializeObject<DataPoint[]>(File.ReadAllText("TrainingDataSet.json"));
 
             Random random = new Random(DateTime.Now.Millisecond);           
@@ -77,16 +83,16 @@ namespace Neural_Network
             //https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch.elapsed?view=net-8.0
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-
             
-            while (stopwatch.ElapsedMilliseconds < 5000)
+            while (stopwatch.ElapsedMilliseconds < 10000)
             {
                 DataPoint[] newDataSet = dataSet.OrderBy(x => random.Next(32768)).ToArray();
                 var dataSetSample = new List<DataPoint>();
                 for (int i = 0; i < newDataSet.Length; i++)
                 {
                     dataSetSample.Add(newDataSet[i]);
-                    if (i % selectedNeuralNetwork.miniBatchSize == selectedNeuralNetwork.miniBatchSize - 1)
+                    if (i % selectedNeuralNetwork.miniBatchSize == selectedNeuralNetwork.miniBatchSize - 1
+                        || i == selectedNeuralNetwork.miniBatchSize - 1)
                     {
                         selectedNeuralNetwork.ApplyGradientDescent(dataSetSample.ToArray());
                         dataSetSample.Clear();

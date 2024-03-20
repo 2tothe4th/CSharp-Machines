@@ -10,7 +10,7 @@ namespace Neural_Network
     {
         public double[,] weights;
         public double[] biases;
-        public double[] CalculateOutputs(double[] inputs, Func<double, double> activation)
+        public double[] CalculateWeightedSums(double[] inputs)
         {
             double[] outputs = new double[weights.GetLength(1)];
             for (int i = 0; i < inputs.Length; i++)
@@ -23,9 +23,21 @@ namespace Neural_Network
             for (int i = 0; i < outputs.Length; i++)
             {
                 outputs[i] += biases[i];
-                outputs[i] = activation(outputs[i]);
             }
             return outputs;
+        }
+        public static double[] CalculateOutputsFromWeightedSums(double[] sums, Func<double, double> activationFunction)
+        {
+            double[] outputs = new double[sums.Length];
+            for (int i = 0; i < sums.Length; i++)
+            {
+                outputs[i] = activationFunction(sums[i]);
+            }
+            return outputs;
+        }
+        public double[] CalculateOutputsFromInputs(double[] inputs, Func<double, double> activationFunction)
+        {
+            return CalculateOutputsFromWeightedSums(CalculateWeightedSums(inputs), activationFunction);
         }
     }
 }
