@@ -9,6 +9,13 @@ namespace Neural_Network
     {
         public double[] inputs;
         public double[] outputs;
+
+        public DataPoint() { }
+        public DataPoint (double[] inputs, double[] outputs)
+        {
+            this.inputs = inputs;
+            this.outputs = outputs;
+        }
     }
     public class ActivationFunctions
     {
@@ -66,7 +73,7 @@ namespace Neural_Network
                 }
             }
             var selectedNeuralNetwork = new NeuralNetwork();
-            selectedNeuralNetwork.nodeCounts = new int[] { 2, 3, 2, 1 };
+            selectedNeuralNetwork.nodeCounts = new int[] { 2, 2, 2, 1 };
             selectedNeuralNetwork.CreateLayers();
             /*
             selectedNeuralNetwork.layers[1].weights[0, 0] = 1;
@@ -84,24 +91,15 @@ namespace Neural_Network
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             
-            while (stopwatch.ElapsedMilliseconds < 10000)
+            while (stopwatch.ElapsedMilliseconds < 20000)
             {
                 DataPoint[] newDataSet = dataSet.OrderBy(x => random.Next(32768)).ToArray();
-                var dataSetSample = new List<DataPoint>();
-                for (int i = 0; i < newDataSet.Length; i++)
-                {
-                    dataSetSample.Add(newDataSet[i]);
-                    if (i % selectedNeuralNetwork.miniBatchSize == selectedNeuralNetwork.miniBatchSize - 1
-                        || i == selectedNeuralNetwork.miniBatchSize - 1)
-                    {
-                        selectedNeuralNetwork.ApplyGradientDescent(dataSetSample.ToArray());
-                        dataSetSample.Clear();
-                        Console.WriteLine(selectedNeuralNetwork.CalculateCostForDataSet(dataSet));
-                    }
-                }
-            }
-            Console.WriteLine(selectedNeuralNetwork.CalculateOutputsForLayer(new double[] { 5, 5 }, 3)[0]);
+                selectedNeuralNetwork.ApplyGradientDescent(dataSet);
+                Console.WriteLine(selectedNeuralNetwork.CalculateCostForDataSet(newDataSet));
+            }            
             stopwatch.Stop();
+            selectedNeuralNetwork.SetPrecomputedNodes(new double[] { 5, 5 });
+            Console.WriteLine(selectedNeuralNetwork.precomputedActivations[3][0]);
         }
     }
 }

@@ -13,15 +13,15 @@ namespace Neural_Network
     {
         public Layer[] layers;
         public int[] nodeCounts;
-        public double learningStrength = 0.01;
+        public double learningStrength = 0.5;
         public double weightAndBiasRandomRange = 1;
 
         //https://datascience.stackexchange.com/questions/18414/are-there-any-rules-for-choosing-the-size-of-a-mini-batch
         public double miniBatchSize = 32;
 
         //Partial derivative calculations
-        public double deltaW = 0.01;
-        public double deltaB = 0.01;
+        //public double deltaW = 0.01;
+        //public double deltaB = 0.01;
 
         //Activation functions
         Func<double, double> activationFunction = input => ActivationFunctions.Sigmoid(input);
@@ -63,6 +63,7 @@ namespace Neural_Network
         }
         public double CalculateCostForDataPoint(DataPoint data)
         {
+            SetPrecomputedNodes(data.inputs);
             double[] calculatedOutputs = precomputedActivations[nodeCounts.Length - 1];
             double cost = 0;
             for (int i = 0; i < data.outputs.Length; i++)
@@ -123,30 +124,39 @@ namespace Neural_Network
         }
         public void ApplyGradientDescent(DataPoint[] dataSet)
         {
-            foreach (DataPoint currentDataPoint in dataSet)
+            List<DataPoint> currentDataSample = new List<DataPoint>();
+            for (int dataPointIndex = 0; dataPointIndex < dataSet.Length; dataPointIndex++)
             {
-                SetPrecomputedNodes(currentDataPoint.inputs);
-                double[] costOverLastLayerActivationsGradient = CalculateDataPointCostOverOutputsGradient(currentDataPoint, precomputedActivations[nodeCounts.Length - 1]);
-                for (int i = 0; i < costOverLastLayerActivationsGradient.Length; i++)
+                currentDataSample.Add(dataSet[dataPointIndex]);
+                //if (dataPointIndex % miniBatchSize != 0 && dataPointIndex != dataSet.Length - 1)
+                foreach (DataPoint currentDataPoint in currentDataSample)
                 {
-                    costOverLastLayerActivationsGradient[i] /= dataSet.Length;
-                }
-                for (int layer = nodeCounts.Length - 2; layer >= 0; layer--)
-                {
-                    double[] costOverCurrentLayerActivationsGradient = new double[nodeCounts[layer]];
-                    for (int outNode = 0; outNode < nodeCounts[layer + 1]; outNode++)
+                    SetPrecomputedNodes(currentDataPoint.inputs);
+
+                    //https://towardsdatascience.com/part-2-gradient-descent-and-backpropagation-bf90932c066a
+                    double[] costOverLastLayerActivationsGradient = CalculateDataPointCostOverOutputsGradient(currentDataPoint, precomputedActivations[nodeCounts.Length - 1]);
+                    for (int i = 0; i < costOverLastLayerActivationsGradient.Length; i++)
                     {
-                        double activationOverBiasDerivative = activationFunctionDerivative(precomputedSums[layer + 1][outNode]);
-                        layers[layer].biases[outNode] -= learningStrength * activationOverBiasDerivative * costOverLastLayerActivationsGradient[outNode];
-                        for (int inNode = 0; inNode < nodeCounts[layer]; inNode++)
-                        {                                                                        
-                            layers[layer].weights[inNode, outNode] -= learningStrength * activationOverBiasDerivative * precomputedActivations[layer][inNode] * costOverLastLayerActivationsGradient[outNode];
-                            //Activation over last activation derivative
-                            costOverCurrentLayerActivationsGradient[inNode] += activationOverBiasDerivative * layers[layer].weights[inNode, outNode] * costOverLastLayerActivationsGradient[outNode]; 
-                        }
+                        costOverLastLayerActivationsGradient[i] /= dataSet.Length;
                     }
-                    costOverLastLayerActivationsGradient = costOverCurrentLayerActivationsGradient;
+                    for (int layer = nodeCounts.Length - 2; layer >= 0; layer--)
+                    {
+                        double[] costOverCurrentLayerActivationsGradient = new double[nodeCounts[layer]];
+                        for (int outNode = 0; outNode < nodeCounts[layer + 1]; outNode++)
+                        {
+                            double activationOverBiasDerivative = activationFunctionDerivative(precomputedSums[layer + 1][outNode]);
+                            layers[layer].biases[outNode] -= learningStrength * activationOverBiasDerivative * costOverLastLayerActivationsGradient[outNode];
+                            for (int inNode = 0; inNode < nodeCounts[layer]; inNode++)
+                            {
+                                layers[layer].weights[inNode, outNode] -= learningStrength * activationOverBiasDerivative * precomputedActivations[layer][inNode] * costOverLastLayerActivationsGradient[outNode];
+                                //Activation over last activation derivative
+                                costOverCurrentLayerActivationsGradient[inNode] += activationOverBiasDerivative * layers[layer].weights[inNode, outNode] * costOverLastLayerActivationsGradient[outNode];
+                            }
+                        }
+                        costOverLastLayerActivationsGradient = costOverCurrentLayerActivationsGradient;
+                    }
                 }
+                currentDataSample.Clear();
             }
         }
     }
