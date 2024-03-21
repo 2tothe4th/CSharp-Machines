@@ -44,34 +44,7 @@ namespace Neural_Network
     internal class Program
     {
         static void Main(string[] args)
-        {
-            bool createNewDataSet = true;
-            if (createNewDataSet)
-            {
-                DataPoint[] newDataSet = new DataPoint[100];
-                for (int i = 0; i < 10; i++)
-                {
-                    for (int j = 0; j < 10; j++)
-                    {
-                        DataPoint binaryDataPoint = new DataPoint();
-                        binaryDataPoint.inputs = new double[] { i, j };
-                        if (j <= -0.4d * (i * i - 10 * i))
-                            binaryDataPoint.outputs = new double[] { 1 };
-                        else
-                            binaryDataPoint.outputs = new double[] { 0 };
-                        newDataSet[10 * i + j] = binaryDataPoint;
-                    }
-                }
-
-                //https://learn.microsoft.com/en-us/dotnet/api/system.io.streamwriter?view=net-8.0
-                using (StreamWriter sw = new StreamWriter("TrainingDataSet.json"))
-                {
-                    foreach (char charecter in JsonConvert.SerializeObject(newDataSet))
-                    {
-                        sw.Write(charecter);
-                    }
-                }
-            }
+        {     
             var selectedNeuralNetwork = new NeuralNetwork();
             selectedNeuralNetwork.nodeCounts = new int[] { 2, 2, 2, 1 };
             selectedNeuralNetwork.CreateLayers();
