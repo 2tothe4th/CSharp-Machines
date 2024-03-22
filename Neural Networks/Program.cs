@@ -86,27 +86,42 @@ namespace Neural_Network
             //selectedNeuralNetwork.activationFunction = ActivationFunctions.ReLU;
             //selectedNeuralNetwork.activationFunctionDerivative = ActivationFunctionDerivatives.ReLU;
 
+            Console.WriteLine("Type something to import data from the JSON file");
+            string jsonQuestionInput = Console.ReadLine();
+            if (jsonQuestionInput != "")
+                selectedNeuralNetwork = JsonConvert.DeserializeObject<NeuralNetwork>(File.ReadAllText("NeuralNetworkData.json"));
+
+            Console.WriteLine("Enter the training time in milliseconds");
+
+            //https://stackoverflow.com/questions/11399439/converting-string-to-double-in-c-sharp
+            int trainingTime = (int)Convert.ToDouble(Console.ReadLine());
+
             //https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch.elapsed?view=net-8.0
             Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            
-            while (stopwatch.ElapsedMilliseconds < 5000)
+            stopwatch.Start();            
+
+            while (stopwatch.ElapsedMilliseconds < trainingTime)
             {
                 DataPoint[] newDataSet = dataSet.OrderBy(x => random.Next(32768)).ToArray();
                 selectedNeuralNetwork.ApplyGradientDescent(dataSet);
                 Console.WriteLine("Cost: " + selectedNeuralNetwork.CalculateCostForDataSet(newDataSet));
             }            
             stopwatch.Stop();
-            double[] inputs = new double[] { 5, -5 };
-            selectedNeuralNetwork.SetPrecomputedNodes(inputs);
 
+            Console.WriteLine("Input a test value");
+            string[] stringInputs = Console.ReadLine().Replace(" ", "").Split(",");
+            double[] inputs = new double[stringInputs.Length];
+            for (int i = 0; i < stringInputs.Length; i++)
+            {
+                inputs[i] = Convert.ToDouble(stringInputs[i]);   
+            }
+            selectedNeuralNetwork.SetPrecomputedNodes(inputs);
             string inputString = "";
             for (int i = 0; i < inputs.Length - 1; i++)
             {
                 inputString += inputs[i] + ", ";
             }
             inputString += inputs[inputs.Length - 1];
-
             Console.WriteLine("Output from " + inputString + ": " + selectedNeuralNetwork.precomputedActivations[3][0]);
             using (StreamWriter sw = new StreamWriter("NeuralNetworkData.json"))
             {
