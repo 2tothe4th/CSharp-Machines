@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32804.467
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neural Network", "Neural Networks\Neural Network.csproj", "{B06A1BA4-675E-4CE1-9F32-7DF0D735C5E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unit Tests", "Unit Tests\Unit Tests.csproj", "{D9AC307D-D890-4994-AEA3-BA8504B4F3DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit Tests", "Unit Tests\Unit Tests.csproj", "{D9AC307D-D890-4994-AEA3-BA8504B4F3DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data Set Generator", "Data Set Generator\Data Set Generator.csproj", "{3D38B948-68A9-4791-A22F-10F3DAC27FBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data Set Generator", "Data Set Generator\Data Set Generator.csproj", "{3D38B948-68A9-4791-A22F-10F3DAC27FBE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User Interface", "User Interface\User Interface.csproj", "{701D1837-6E80-45D6-AC1D-4CEF82FEF802}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neural Network", "Neural Network\Neural Network.csproj", "{F330C4A6-1F7C-4796-8C01-7B1ED08D6F71}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B06A1BA4-675E-4CE1-9F32-7DF0D735C5E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B06A1BA4-675E-4CE1-9F32-7DF0D735C5E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B06A1BA4-675E-4CE1-9F32-7DF0D735C5E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B06A1BA4-675E-4CE1-9F32-7DF0D735C5E1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D9AC307D-D890-4994-AEA3-BA8504B4F3DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D9AC307D-D890-4994-AEA3-BA8504B4F3DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9AC307D-D890-4994-AEA3-BA8504B4F3DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +25,14 @@ Global
 		{3D38B948-68A9-4791-A22F-10F3DAC27FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D38B948-68A9-4791-A22F-10F3DAC27FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D38B948-68A9-4791-A22F-10F3DAC27FBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{701D1837-6E80-45D6-AC1D-4CEF82FEF802}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{701D1837-6E80-45D6-AC1D-4CEF82FEF802}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{701D1837-6E80-45D6-AC1D-4CEF82FEF802}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{701D1837-6E80-45D6-AC1D-4CEF82FEF802}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F330C4A6-1F7C-4796-8C01-7B1ED08D6F71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F330C4A6-1F7C-4796-8C01-7B1ED08D6F71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F330C4A6-1F7C-4796-8C01-7B1ED08D6F71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F330C4A6-1F7C-4796-8C01-7B1ED08D6F71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

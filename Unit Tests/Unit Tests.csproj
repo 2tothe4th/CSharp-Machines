@@ -14,10 +14,11 @@
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Neural Networks\Neural Network.csproj" />
+    <ProjectReference Include="..\Neural Network\Neural Network.csproj" />
   </ItemGroup>
 
 </Project>
