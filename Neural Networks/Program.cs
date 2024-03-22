@@ -17,6 +17,11 @@ namespace Neural_Network
             this.outputs = outputs;
         }
     }
+    public enum ActivationFunctionType 
+    { 
+        Sigmoid,
+        ReLU
+    }
     public class ActivationFunctions
     {
         public static double Sigmoid(double input)
@@ -26,6 +31,17 @@ namespace Neural_Network
         public static double ReLU(double input)
         {
             return Math.Max(0, input);
+        }
+        public static double GetFunctionFromEnum(double input, ActivationFunctionType activationFunction)
+        {
+            switch (activationFunction)
+            { 
+                case ActivationFunctionType.Sigmoid:
+                    return Sigmoid(input);
+                case ActivationFunctionType.ReLU:
+                    return ReLU(input);
+            }
+            return 0;
         }
     }
     public class ActivationFunctionDerivatives
@@ -38,7 +54,19 @@ namespace Neural_Network
         }
         public static double ReLU(double input)
         {
+            //https://stackoverflow.com/questions/42042561/relu-derivative-in-backpropagation
             return input >= 0 ? 1 : 0;
+        }
+        public static double GetFunctionFromEnum(double input, ActivationFunctionType activationFunction)
+        {
+            switch (activationFunction)
+            {
+                case ActivationFunctionType.Sigmoid:
+                    return Sigmoid(input);
+                case ActivationFunctionType.ReLU:
+                    return ReLU(input);
+            }
+            return 0;
         }
     }    
     internal class Program
@@ -48,31 +76,46 @@ namespace Neural_Network
             var selectedNeuralNetwork = new NeuralNetwork();
             selectedNeuralNetwork.nodeCounts = new int[] { 2, 2, 2, 1 };
             selectedNeuralNetwork.CreateLayers();
-            /*
-            selectedNeuralNetwork.layers[1].weights[0, 0] = 1;
-            selectedNeuralNetwork.layers[1].weights[1, 0] = 1;
-            selectedNeuralNetwork.SetPrecomputedNodes(new double[] { 0 });
-            Console.WriteLine(selectedNeuralNetwork.precomputedActivations[2][0]);*/
 
             DataPoint[] dataSet = JsonConvert.DeserializeObject<DataPoint[]>(File.ReadAllText("TrainingDataSet.json"));
 
             Random random = new Random(DateTime.Now.Millisecond);           
 
             selectedNeuralNetwork.RandomizeWeightsAndBiases();
+            selectedNeuralNetwork.miniBatchSize = 128;
+            //selectedNeuralNetwork.activationFunction = ActivationFunctions.ReLU;
+            //selectedNeuralNetwork.activationFunctionDerivative = ActivationFunctionDerivatives.ReLU;
 
             //https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch.elapsed?view=net-8.0
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             
-            while (stopwatch.ElapsedMilliseconds < 20000)
+            while (stopwatch.ElapsedMilliseconds < 5000)
             {
                 DataPoint[] newDataSet = dataSet.OrderBy(x => random.Next(32768)).ToArray();
                 selectedNeuralNetwork.ApplyGradientDescent(dataSet);
-                Console.WriteLine(selectedNeuralNetwork.CalculateCostForDataSet(newDataSet));
+                Console.WriteLine("Cost: " + selectedNeuralNetwork.CalculateCostForDataSet(newDataSet));
             }            
             stopwatch.Stop();
-            selectedNeuralNetwork.SetPrecomputedNodes(new double[] { 5, 5 });
-            Console.WriteLine(selectedNeuralNetwork.precomputedActivations[3][0]);
+            double[] inputs = new double[] { 5, -5 };
+            selectedNeuralNetwork.SetPrecomputedNodes(inputs);
+
+            string inputString = "";
+            for (int i = 0; i < inputs.Length - 1; i++)
+            {
+                inputString += inputs[i] + ", ";
+            }
+            inputString += inputs[inputs.Length - 1];
+
+            Console.WriteLine("Output from " + inputString + ": " + selectedNeuralNetwork.precomputedActivations[3][0]);
+            using (StreamWriter sw = new StreamWriter("NeuralNetworkData.json"))
+            {
+                //https://stackoverflow.com/questions/7397207/json-net-error-self-referencing-loop-detected-for-type
+                foreach (char charecter in JsonConvert.SerializeObject(selectedNeuralNetwork))
+                {
+                    sw.Write(charecter);
+                }
+            }
         }
     }
 }

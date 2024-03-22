@@ -17,22 +17,14 @@ namespace Neural_Network
         public double weightAndBiasRandomRange = 1;
 
         //https://datascience.stackexchange.com/questions/18414/are-there-any-rules-for-choosing-the-size-of-a-mini-batch
-        public double miniBatchSize = 32;
-
-        //Partial derivative calculations
-        //public double deltaW = 0.01;
-        //public double deltaB = 0.01;
+        public int miniBatchSize = 32;
 
         //Activation functions
-        Func<double, double> activationFunction = input => ActivationFunctions.Sigmoid(input);
-        Func<double, double> activationFunctionDerivative = input => ActivationFunctionDerivatives.Sigmoid(input);
+        public ActivationFunctionType activationFunction = ActivationFunctionType.Sigmoid;
 
         //Precomputed values
         public List<double[]> precomputedSums = new List<double[]>();
         public List<double[]> precomputedActivations = new List<double[]>();
-        //public List<double[]> precomputedWeightGradients = new List<double[]>();
-        //public List<double[]> precomputedBiasGradients = new List<double[]>();
-        //public List<double[]> precomputedCostOverActivationGradients = new List<double[]>();
 
         //public double[] inputValues;
         public void CreateLayers()
@@ -124,16 +116,17 @@ namespace Neural_Network
         }
         public void ApplyGradientDescent(DataPoint[] dataSet)
         {
+            //https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&ab_channel=3Blue1Brown
+            //https://www.youtube.com/watch?v=hfMk-kjRv4c&t=0s&ab_channel=SebastianLague
             List<DataPoint> currentDataSample = new List<DataPoint>();
             for (int dataPointIndex = 0; dataPointIndex < dataSet.Length; dataPointIndex++)
             {
                 currentDataSample.Add(dataSet[dataPointIndex]);
-                //if (dataPointIndex % miniBatchSize != 0 && dataPointIndex != dataSet.Length - 1)
+                if (dataPointIndex % miniBatchSize != miniBatchSize - 1 && dataPointIndex != dataSet.Length - 1)
+                    continue;
                 foreach (DataPoint currentDataPoint in currentDataSample)
                 {
                     SetPrecomputedNodes(currentDataPoint.inputs);
-
-                    //https://towardsdatascience.com/part-2-gradient-descent-and-backpropagation-bf90932c066a
                     double[] costOverLastLayerActivationsGradient = CalculateDataPointCostOverOutputsGradient(currentDataPoint, precomputedActivations[nodeCounts.Length - 1]);
                     for (int i = 0; i < costOverLastLayerActivationsGradient.Length; i++)
                     {
@@ -144,7 +137,7 @@ namespace Neural_Network
                         double[] costOverCurrentLayerActivationsGradient = new double[nodeCounts[layer]];
                         for (int outNode = 0; outNode < nodeCounts[layer + 1]; outNode++)
                         {
-                            double activationOverBiasDerivative = activationFunctionDerivative(precomputedSums[layer + 1][outNode]);
+                            double activationOverBiasDerivative = ActivationFunctionDerivatives.GetFunctionFromEnum(precomputedSums[layer + 1][outNode], activationFunction);
                             layers[layer].biases[outNode] -= learningStrength * activationOverBiasDerivative * costOverLastLayerActivationsGradient[outNode];
                             for (int inNode = 0; inNode < nodeCounts[layer]; inNode++)
                             {

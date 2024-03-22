@@ -26,16 +26,16 @@ namespace Neural_Network
             }
             return outputs;
         }
-        public static double[] CalculateOutputsFromWeightedSums(double[] sums, Func<double, double> activationFunction)
+        public static double[] CalculateOutputsFromWeightedSums(double[] sums, ActivationFunctionType activationFunction)
         {
             double[] outputs = new double[sums.Length];
             for (int i = 0; i < sums.Length; i++)
             {
-                outputs[i] = activationFunction(sums[i]);
+                outputs[i] = ActivationFunctions.GetFunctionFromEnum(sums[i], activationFunction);
             }
             return outputs;
         }
-        public double[] CalculateOutputsFromInputs(double[] inputs, Func<double, double> activationFunction)
+        public double[] CalculateOutputsFromInputs(double[] inputs, ActivationFunctionType activationFunction)
         {
             return CalculateOutputsFromWeightedSums(CalculateWeightedSums(inputs), activationFunction);
         }
