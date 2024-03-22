@@ -3,17 +3,17 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>User_Interface</RootNamespace>
+    <RootNamespace>Neural_Networks</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <None Include="bin\Debug\net6.0\3x3Parabola.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Neural Network\Neural Network.csproj" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
 </Project>
