@@ -10,19 +10,21 @@ namespace Data_Set_Generator
         public static void CreateParabolaSet(int size)
         {
             DataPoint[] newDataSet = new DataPoint[size * size];
-            for (int i = 0; i < size; i++)
+            int index = 0;
+            for (double i = 0; i < size; i++)
             {
-                for (int j = 0; j < size; j++)
+                for (double j = 0; j < size; j++)
                 {
                     DataPoint binaryDataPoint = new DataPoint();
-                    binaryDataPoint.inputs = new double[] { i, j };
+                    binaryDataPoint.inputs = new double[] { i / size, j / size };
 
                     //Original height is -0.25size^2
-                    if (j <= -4 / (float)size * i * (i - size))
+                    if (j <= -4d / size * i * (i - size))
                         binaryDataPoint.outputs = new double[] { 1 };
                     else
                         binaryDataPoint.outputs = new double[] { 0 };
-                    newDataSet[size * i + j] = binaryDataPoint;
+                    newDataSet[index] = binaryDataPoint;
+                    index++;
                 }
             }
 
@@ -34,6 +36,10 @@ namespace Data_Set_Generator
                     sw.Write(charecter);
                 }
             }
+        }
+        public static void CreateImageDataSet(string imagePath)
+        { 
+            
         }
         static void Main(string[] args)
         {
