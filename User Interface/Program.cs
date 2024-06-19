@@ -3,27 +3,29 @@ using System.Diagnostics;
 using Neural_Network;
 using Newtonsoft.Json;
 
-namespace MyApp
+namespace User_Interface
 {
     public class Program
     {
         static void Main(string[] args)
         {
             var selectedNeuralNetwork = new NeuralNetwork();
-            selectedNeuralNetwork.nodeCounts = new int[] { 2, 2, 2, 1 };
+            selectedNeuralNetwork.nodeCounts = new int[] { 784, 16, 16, 10 };
             selectedNeuralNetwork.CreateLayers();
 
+            //https://stackoverflow.com/questions/8308834/creating-a-true-random
             Random random = new Random(DateTime.Now.Millisecond);
 
-            selectedNeuralNetwork.RandomizeWeightsAndBiases();
-
-            Console.WriteLine("Enter the path to the dataset");
+            Console.WriteLine("Enter the path to the training dataset");
             DataPoint[] dataSet = JsonConvert.DeserializeObject<DataPoint[]>(File.ReadAllText(Console.ReadLine()));
+
+            Console.WriteLine("Enter the path to the testing dataset");
+            DataPoint[] testingDataSet = JsonConvert.DeserializeObject<DataPoint[]>(File.ReadAllText(Console.ReadLine()));
 
             Console.WriteLine("Type something to import data from the JSON file");
             string jsonQuestionInput = Console.ReadLine();
             if (jsonQuestionInput != "")
-                selectedNeuralNetwork = JsonConvert.DeserializeObject<NeuralNetwork>(File.ReadAllText("NeuralNetworkData.json"));
+                selectedNeuralNetwork = JsonConvert.DeserializeObject<NeuralNetwork>(File.ReadAllText("../../../NeuralNetworkData.json"));
 
             Console.WriteLine("Enter the training time in milliseconds");
             //https://stackoverflow.com/questions/11399439/converting-string-to-double-in-c-sharp
@@ -31,6 +33,13 @@ namespace MyApp
 
             Console.WriteLine("Enter the mini batch size");
             selectedNeuralNetwork.miniBatchSize = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("Enter the Neural Network layer sizes");
+            //https://stackoverflow.com/questions/823532/apply-function-to-all-elements-of-collection-through-linq
+            selectedNeuralNetwork.nodeCounts = Console.ReadLine().Replace(",", "").Split(",").Select(x => Convert.ToInt32(x)).ToArray();
+
+            selectedNeuralNetwork.RandomizeWeightsAndBiases();
+
 
             //https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch.elapsed?view=net-8.0
             Stopwatch stopwatch = new Stopwatch();
@@ -40,10 +49,11 @@ namespace MyApp
             {
                 DataPoint[] newDataSet = dataSet.OrderBy(x => random.Next(32768)).ToArray();
                 selectedNeuralNetwork.ApplyGradientDescent(dataSet);
-                Console.WriteLine("Cost: " + selectedNeuralNetwork.CalculateCostForDataSet(newDataSet));
+                Console.WriteLine("Cost (Training, Testing): " + selectedNeuralNetwork.CalculateCostForDataSet(dataSet) + ", " + selectedNeuralNetwork.CalculateCostForDataSet(testingDataSet));
             }
             stopwatch.Stop();
 
+            /*
             Console.WriteLine("Input a test value");
             string[] stringInputs = Console.ReadLine().Replace(" ", "").Split(",");
             double[] inputs = new double[stringInputs.Length];
@@ -58,7 +68,7 @@ namespace MyApp
                 inputString += inputs[i] + ", ";
             }
             inputString += inputs[inputs.Length - 1];
-            Console.WriteLine("Output from " + inputString + ": " + selectedNeuralNetwork.precomputedActivations[3][0]);
+            Console.WriteLine("Output from " + inputString + ": " + selectedNeuralNetwork.precomputedActivations[3][0]);*/
             using (StreamWriter sw = new StreamWriter("NeuralNetworkData.json"))
             {
                 //https://stackoverflow.com/questions/7397207/json-net-error-self-referencing-loop-detected-for-type
@@ -66,7 +76,10 @@ namespace MyApp
                 {
                     sw.Write(charecter);
                 }
-            }
+            }          
+
+            Console.WriteLine("Cost from testing dataset: " + selectedNeuralNetwork.CalculateCostForDataSet(testingDataSet));
+
         }
     }
 }

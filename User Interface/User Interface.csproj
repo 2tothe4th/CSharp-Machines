@@ -9,11 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="TestingDataSet.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Neural Network\Neural Network.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="bin\Debug\net6.0\" />
   </ItemGroup>
 
 </Project>

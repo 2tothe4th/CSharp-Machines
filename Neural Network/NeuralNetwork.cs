@@ -19,6 +19,9 @@ namespace Neural_Network
         //https://datascience.stackexchange.com/questions/18414/are-there-any-rules-for-choosing-the-size-of-a-mini-batch
         public int miniBatchSize = 32;
 
+        //https://towardsdatascience.com/dropout-in-neural-networks-47a162d621d9
+        //public double dropoutRate = 0.5;
+
         //Activation functions
         public ActivationFunctionType activationFunction = ActivationFunctionType.Sigmoid;
 
@@ -55,6 +58,7 @@ namespace Neural_Network
         }
         public double CalculateCostForDataPoint(DataPoint data)
         {
+            //
             SetPrecomputedNodes(data.inputs);
             double[] calculatedOutputs = precomputedActivations[nodeCounts.Length - 1];
             double cost = 0;
@@ -118,6 +122,8 @@ namespace Neural_Network
         {
             //https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&ab_channel=3Blue1Brown
             //https://www.youtube.com/watch?v=hfMk-kjRv4c&t=0s&ab_channel=SebastianLague
+            //https://en.wikipedia.org/wiki/Stochastic_gradient_descent
+            //https://mohitmishra786687.medium.com/the-curse-of-local-minima-how-to-escape-and-find-the-global-minimum-fdabceb2cd6a
             List<DataPoint> currentDataSample = new List<DataPoint>();
             for (int dataPointIndex = 0; dataPointIndex < dataSet.Length; dataPointIndex++)
             {

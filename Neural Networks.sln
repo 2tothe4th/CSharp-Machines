@@ -7,9 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unit Tests", "Unit Tests\Un
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data Set Generator", "Data Set Generator\Data Set Generator.csproj", "{3D38B948-68A9-4791-A22F-10F3DAC27FBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User Interface", "User Interface\User Interface.csproj", "{701D1837-6E80-45D6-AC1D-4CEF82FEF802}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "User Interface", "User Interface\User Interface.csproj", "{701D1837-6E80-45D6-AC1D-4CEF82FEF802}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neural Network", "Neural Network\Neural Network.csproj", "{F330C4A6-1F7C-4796-8C01-7B1ED08D6F71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neural Network", "Neural Network\Neural Network.csproj", "{F330C4A6-1F7C-4796-8C01-7B1ED08D6F71}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B27B8EF4-832C-4BC5-B36A-BF14512506CA}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
