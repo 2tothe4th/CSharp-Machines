@@ -16,7 +16,7 @@ namespace User_Interface
             Random random = new Random(DateTime.Now.Millisecond);
 
             Console.WriteLine("Enter the path to the training dataset");
-            DataPoint[] dataSet = JsonConvert.DeserializeObject<DataPoint[]>(File.ReadAllText(Console.ReadLine()));
+            DataPoint[] trainingDataSet = JsonConvert.DeserializeObject<DataPoint[]>(File.ReadAllText(Console.ReadLine()));
 
             Console.WriteLine("Enter the path to the testing dataset");
             DataPoint[] testingDataSet = JsonConvert.DeserializeObject<DataPoint[]>(File.ReadAllText(Console.ReadLine()));
@@ -35,10 +35,14 @@ namespace User_Interface
 
             Console.WriteLine("Enter the Neural Network layer sizes");
             //https://stackoverflow.com/questions/823532/apply-function-to-all-elements-of-collection-through-linq
-            selectedNeuralNetwork.nodeCounts = Console.ReadLine().Replace(" ", "").Split(",").Select(x => Convert.ToInt32(x)).ToArray();
+            int[] layerSizes = Console.ReadLine().Replace(" ", "").Split(",").Select(x => Convert.ToInt32(x)).ToArray();
 
-            selectedNeuralNetwork.CreateLayers();
-            selectedNeuralNetwork.RandomizeWeightsAndBiases();
+            if (jsonQuestionInput == "")
+            {
+                selectedNeuralNetwork.nodeCounts = layerSizes;
+                selectedNeuralNetwork.CreateLayers();
+                selectedNeuralNetwork.RandomizeWeightsAndBiases();
+            }
 
 
             //https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch.elapsed?view=net-8.0
@@ -47,9 +51,9 @@ namespace User_Interface
 
             while (stopwatch.ElapsedMilliseconds < trainingTime)
             {
-                DataPoint[] newDataSet = dataSet.OrderBy(x => random.Next(32768)).ToArray();
-                selectedNeuralNetwork.ApplyGradientDescent(dataSet);
-                Console.WriteLine("Cost (Training, Testing): " + selectedNeuralNetwork.CalculateCostForDataSet(dataSet) + ", " + selectedNeuralNetwork.CalculateCostForDataSet(testingDataSet));
+                DataPoint[] newDataSet = trainingDataSet.OrderBy(x => random.Next(32768)).ToArray();
+                selectedNeuralNetwork.ApplyGradientDescent(trainingDataSet);
+                Console.WriteLine("Cost (Training, Testing): " + selectedNeuralNetwork.CalculateCostForDataSet(trainingDataSet) + ", " + selectedNeuralNetwork.CalculateCostForDataSet(testingDataSet));
             }
             stopwatch.Stop();
 
@@ -69,17 +73,18 @@ namespace User_Interface
             }
             inputString += inputs[inputs.Length - 1];
             Console.WriteLine("Output from " + inputString + ": " + selectedNeuralNetwork.precomputedActivations[3][0]);*/
-            using (StreamWriter sw = new StreamWriter("NeuralNetworkData.json"))
+            using (StreamWriter sw = new StreamWriter("../../../NeuralNetworkData.json"))
             {
                 //https://stackoverflow.com/questions/7397207/json-net-error-self-referencing-loop-detected-for-type
                 foreach (char charecter in JsonConvert.SerializeObject(selectedNeuralNetwork))
                 {
                     sw.Write(charecter);
                 }
-            }          
+            }
 
-            Console.WriteLine("Cost from testing dataset: " + selectedNeuralNetwork.CalculateCostForDataSet(testingDataSet));
-
+            //Console.WriteLine("Cost from testing dataset: " + selectedNeuralNetwork.CalculateCostForDataSet(testingDataSet));
+            Console.WriteLine("Training Accuracy: " + selectedNeuralNetwork.GetDataSetAccuracy(trainingDataSet));
+            Console.WriteLine("Testing Accuracy: " + selectedNeuralNetwork.GetDataSetAccuracy(testingDataSet));
         }
     }
 }

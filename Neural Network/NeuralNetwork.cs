@@ -158,5 +158,48 @@ namespace Neural_Network
                 currentDataSample.Clear();
             }
         }
+        public double GetDataSetAccuracy(DataPoint[] dataSet)
+        {
+            double correctAnswerCount = 0;
+            foreach (DataPoint currentDataPoint in dataSet)
+            {
+                SetPrecomputedNodes(currentDataPoint.inputs);
+                int finalLayerIndex = layers.Count() - 1;
+
+                //Get the result from the Neural Network
+                int predictedBestActivationIndex = 0;
+                double predictedBestActivation = -100;
+
+                //https://stackoverflow.com/questions/1136174/obtain-the-index-of-the-maximum-element
+                for (int i = 0; i < nodeCounts[finalLayerIndex]; i++)
+                {
+                    double currentActivation = precomputedActivations[finalLayerIndex][i];
+                    if (currentActivation >= predictedBestActivation)
+                    {
+                        predictedBestActivationIndex = i;
+                        predictedBestActivation = currentActivation;
+                    }
+                }
+
+                //Get the result from the data point
+                int actualBestActivationIndex = 0;
+                double actualBestActivation = -100;
+
+                //https://stackoverflow.com/questions/1136174/obtain-the-index-of-the-maximum-element
+                for (int i = 0; i < nodeCounts[finalLayerIndex]; i++)
+                {
+                    double currentActivation = currentDataPoint.outputs[i];
+                    if (currentActivation >= actualBestActivation)
+                    {
+                        actualBestActivationIndex = i;
+                        actualBestActivation = currentActivation;
+                    }
+                }
+
+                if (predictedBestActivationIndex == actualBestActivationIndex)
+                    correctAnswerCount++;
+            }
+            return correctAnswerCount / dataSet.Count();
+        }
     }
 }
