@@ -10,8 +10,7 @@ namespace User_Interface
         static void Main(string[] args)
         {
             var selectedNeuralNetwork = new NeuralNetwork();
-            selectedNeuralNetwork.nodeCounts = new int[] { 784, 16, 16, 10 };
-            selectedNeuralNetwork.CreateLayers();
+            selectedNeuralNetwork.nodeCounts = new int[] { 784, 16, 16, 10 };            
 
             //https://stackoverflow.com/questions/8308834/creating-a-true-random
             Random random = new Random(DateTime.Now.Millisecond);
@@ -36,8 +35,9 @@ namespace User_Interface
 
             Console.WriteLine("Enter the Neural Network layer sizes");
             //https://stackoverflow.com/questions/823532/apply-function-to-all-elements-of-collection-through-linq
-            selectedNeuralNetwork.nodeCounts = Console.ReadLine().Replace(",", "").Split(",").Select(x => Convert.ToInt32(x)).ToArray();
+            selectedNeuralNetwork.nodeCounts = Console.ReadLine().Replace(" ", "").Split(",").Select(x => Convert.ToInt32(x)).ToArray();
 
+            selectedNeuralNetwork.CreateLayers();
             selectedNeuralNetwork.RandomizeWeightsAndBiases();
 
 
